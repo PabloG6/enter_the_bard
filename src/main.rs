@@ -6,7 +6,7 @@ use sdl2::rect::{Point, Rect};
 use sdl2::render::{Texture, WindowCanvas};
 
 use std::time::Duration;
-static PLAYER_SPEED: i32 = 20;
+const PLAYER_SPEED: i32 = 20;
 fn render(
     canvas: &mut WindowCanvas,
     color: Color,
@@ -21,9 +21,9 @@ fn render(
     let (frame_width, frame_height) = player.sprite.size();
 
 
-    let frame_position = Rect::new(
+    let current_frame = Rect::new(
         player.position.x() + frame_width as i32 * player.current_frame,
-        player.position.y() + frame_height as i32 * render_sprite_direction(player.direction),
+        player.position.y() + frame_height as i32 * direction_spritesheet_row(player.direction),
         frame_width,
         frame_height,
     );
@@ -33,13 +33,13 @@ fn render(
 
     let screen_rect = Rect::from_center(screen_position, frame_width, frame_height);
 
-    canvas.copy(texture, frame_position, screen_rect)?;
+    canvas.copy(texture, current_frame, screen_rect)?;
 
     canvas.present();
     Ok(())
 }
 
-fn render_sprite_direction(direction: Direction) -> i32 {
+fn direction_spritesheet_row(direction: Direction) -> i32 {
     use self::Direction::*;
     match direction {
         Up => 3,
